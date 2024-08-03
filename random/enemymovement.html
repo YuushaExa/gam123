@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <script src="game.js"></script>
+</body>
+</html>
+
+// game.js
+
+// Get the canvas element and its context
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// Define the hero's properties
+const hero = {
+    x: canvas.width / 2, // Center of the canvas
+    y: canvas.height / 2,
+    width: 50,
+    height: 50,
+    color: 'blue'
+};
+
+// Define an array to hold enemies
+const enemies = [];
+
+// Enemy class
+class Enemy {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.width = 30;
+        this.height = 30;
+        this.color = 'red';
+        this.speed = 1; // Speed of the enemy
+    }
+
+    // Method to draw the enemy
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+    }
+
+    // Method to update the enemy's position towards the hero
+    update(hero) {
+        const dx = hero.x - this.x;
+        const dy = hero.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Normalize the direction vector and move the enemy towards the hero
+        if (distance > 0) {
+            this.x += (dx / distance) * this.speed;
+            this.y += (dy / distance) * this.speed;
+        }
+    }
+}
+
+// Function to spawn enemies off-screen around all sides
+function spawnEnemy() {
+    const spawnArea = 100; // Distance from the sides to spawn enemies off-screen
+
+    const sides = [
+        { x: Math.random() * canvas.width, y: -spawnArea }, // Top side
+        { x: Math.random() * canvas.width, y: canvas.height + spawnArea }, // Bottom side
+        { x: -spawnArea, y: Math.random() * canvas.height }, // Left side
+        { x: canvas.width + spawnArea, y: Math.random() * canvas.height } // Right side
+    ];
+
+    // Randomly select a side and add some random offset
+    const side = sides[Math.floor(Math.random() * sides.length)];
+    const offsetX = Math.random() * spawnArea * 2 - spawnArea; // Random offset within the spawn area
+    const offsetY = Math.random() * spawnArea * 2 - spawnArea; // Random offset within the spawn area
+
+    enemies.push(new Enemy(side.x + offsetX, side.y + offsetY));
+}
+
+// Function to draw the hero
+function drawHero() {
+    ctx.fillStyle = hero.color;
+    ctx.fillRect(hero.x - hero.width / 2, hero.y - hero.height / 2, hero.width, hero.height);
+}
+
+// Function to update and draw enemies
+function updateEnemies() {
+    enemies.forEach(enemy => {
+        enemy.update(hero); // Update enemy position
+        enemy.draw(); // Draw enemy
+    });
+}
+
+// Clear the canvas and draw the hero and enemies
+function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    drawHero(); // Draw the hero
+    updateEnemies(); // Update and draw enemies
+    requestAnimationFrame(gameLoop); // Call gameLoop again for the next frame
+}
+
+// Start the game loop
+gameLoop();
+
+// Spawn an enemy every second
+setInterval(spawnEnemy, 1000);
