@@ -1,0 +1,1 @@
+Testing pure JS
