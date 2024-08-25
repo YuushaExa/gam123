@@ -1,0 +1,120 @@
+Creating a simple website builder using vanilla JavaScript based on a 12-column layout with CSS Grid involves several steps. Below is a basic implementation that allows users to add, remove, and rearrange grid items dynamically.
+
+Project Structure
+index.html: The main HTML file.
+styles.css: The CSS file for styling.
+script.js: The JavaScript file for functionality.
+1. index.html
+html
+
+Копировать Код
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Simple Website Builder</title>
+</head>
+<body>
+    <div class="controls">
+        <button id="add-item">Add Item</button>
+        <button id="clear-grid">Clear Grid</button>
+    </div>
+    <div class="grid-container" id="grid-container">
+        <!-- Grid items will be added here -->
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+2. styles.css
+css
+
+Копировать Код
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.controls {
+    margin: 20px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 10px;
+    padding: 20px;
+}
+
+.grid-item {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #fff;
+    cursor: pointer;
+}
+
+.grid-item:hover {
+    background-color: #45a049;
+}
+3. script.js
+javascript
+
+Копировать Код
+document.addEventListener('DOMContentLoaded', () => {
+    const gridContainer = document.getElementById('grid-container');
+    const addItemButton = document.getElementById('add-item');
+    const clearGridButton = document.getElementById('clear-grid');
+    let itemCount = 0;
+
+    // Function to add a new grid item
+    function addGridItem() {
+        itemCount++;
+        const gridItem = document.createElement('div');
+        gridItem.className = 'grid-item';
+        gridItem.textContent = `Item ${itemCount}`;
+        gridItem.style.gridColumn = `span ${Math.floor(Math.random() * 12) + 1}`; // Random span between 1 and 12
+
+        // Add click event to remove the item
+        gridItem.addEventListener('click', () => {
+            gridContainer.removeChild(gridItem);
+        });
+
+        gridContainer.appendChild(gridItem);
+    }
+
+    // Function to clear the grid
+    function clearGrid() {
+        gridContainer.innerHTML = '';
+        itemCount = 0;
+    }
+
+    // Event listeners
+    addItemButton.addEventListener('click', addGridItem);
+    clearGridButton.addEventListener('click', clearGrid);
+});
+Explanation
+HTML Structure:
+The HTML file contains a control section with buttons to add and clear grid items.
+The grid-container div is where the grid items will be dynamically added.
+CSS Styles:
+The CSS file defines the grid layout and styles for the grid items.
+The grid is set to have 12 equal columns, and each item has a hover effect.
+JavaScript Functionality:
+The JavaScript file listens for DOM content to load and sets up event listeners for the buttons.
+The addGridItem function creates a new grid item with a random column span (between 1 and 12) and adds it to the grid.
+Each grid item can be clicked to remove it from the grid.
+The clearGrid function removes all items from the grid.
+How to Run
+Create a folder for your project.
+Inside the folder, create three files: index.html, styles.css, and script.js.
+Copy the respective code into each file.
+Open index.html in a web browser to see the website builder in action.
+This simple website builder allows you to add and remove grid items dynamically, demonstrating the use of a 12-column layout with CSS Grid and vanilla JavaScript. You can expand this further by adding features like saving the layout, resizing items, or dragging and dropping items.
